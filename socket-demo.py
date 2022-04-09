@@ -6,6 +6,7 @@ import sys
 
 
 IP = "localhost"
+# IP = "47.93.21.175"
 PORT = 8081
 
 
@@ -70,6 +71,12 @@ class CursorClient:
         self.my_socket.send(
             str(" ".join([str(item) for item in paras]) + "\n").encode())
 
+    def sendPressureRate(self, target, value):
+        self.my_socket.send(('rate' + " " + str(target) + " " + str(value) + "\n").encode())
+
+    def sendTimeLeft(self, time):
+        self.my_socket.send(('timeleft' + " " + str(int(time)) + "\n").encode())
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -85,7 +92,7 @@ if __name__ == '__main__':
     my_remote_handle = CursorClient(IP, PORT)
 
     # for grid
-    my_remote_handle.sendPos(0.4, 0.6)
+    # my_remote_handle.sendPos(0.4, 0.6)
 
     # for reshaping the keyboard
     # my_remote_handle.reshapeKB([0.5 * (0.9 - 0.1) / 10 + 0.1, 0.85,
@@ -132,18 +139,20 @@ if __name__ == '__main__':
     # time.sleep(1)
 
     # for pressure test
-    # my_remote_handle.sendMaxForce(0.9)
-    # time.sleep(1)
-    # my_remote_handle.sendPressure(0.1)
-    # time.sleep(1)
-    # my_remote_handle.sendPressure(0.13)
-    # my_remote_handle.sendPressure(0.2)
-    # time.sleep(1)
-    # my_remote_handle.sendPressure(0.3)
-    # time.sleep(1)
-    # my_remote_handle.sendPressure(0.4)
-    # time.sleep(1)
-    # my_remote_handle.sendPressure(0.38)
+    my_remote_handle.sendPressureRate(150, 200)
+    time.sleep(1)
+    my_remote_handle.sendMaxForce(0.9)
+    time.sleep(1)
+    my_remote_handle.sendPressure(0.1)
+    time.sleep(1)
+    my_remote_handle.sendPressure(0.13)
+    my_remote_handle.sendPressure(0.2)
+    time.sleep(1)
+    my_remote_handle.sendPressure(0.3)
+    time.sleep(1)
+    my_remote_handle.sendPressure(0.4)
+    time.sleep(1)
+    my_remote_handle.sendPressure(0.38)
     # time.sleep(6)
     # my_remote_handle.sendPressure(0.41)
 

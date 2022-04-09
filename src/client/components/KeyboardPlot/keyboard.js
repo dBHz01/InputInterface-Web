@@ -55,6 +55,7 @@ const Keyboard = ({ cRef }) => {
     const [m_pos, setMPos] = useState({ x: -0.5 * (0.75 - 0.25) / 9 + 0.75, y: 0.15 });
     const [candidates, setCandidates] = useState(["hello", "how", "are", "you"]);
     const [sentence, setSentence] = useState("");
+    const [target, setTarget] = useState("");
 
     const layout = useRef(null);
     // const [layout, setLayout] = useState(new Layout({'width': 450, 'height': 225, 'posx': 0, 'posy': 225}));
@@ -108,6 +109,12 @@ const Keyboard = ({ cRef }) => {
                 case 'candidates':
                     setCandidates([items[1], items[2], items[3], items[4], items[5]]);
                     dispatch({ type: 'candidates', value: { cands: [items[1], items[2], items[3], items[4], items[5]] } });
+                    break;
+                case 'target':
+                    setTarget(items[1]);
+                    break;
+                case 'timestamp':
+                    dispatch({ type: 'timestamp', value: items[1] });
                     break;
                 default:
                     break;
@@ -553,6 +560,8 @@ const Keyboard = ({ cRef }) => {
                 text: action.value.cands.length > 0 ? action.value.cands[0] : '',
             }
             return newState;
+        } else if (action.type === 'timestamp') {
+            bugout.log(action.value, new Date().getTime());
         }
         return state;
     };
@@ -591,6 +600,7 @@ const Keyboard = ({ cRef }) => {
             <FullScreen handle={fullScreenHandle}>
                 <Card title="Gesture Keyboard" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
                     <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
+                    <h3>下一个单词:{target}</h3>
                     <h3>输入单词:{state.text}</h3>
                     <h3>输入句子:{sentence}</h3>
                     <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">

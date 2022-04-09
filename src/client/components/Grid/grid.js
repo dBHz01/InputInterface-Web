@@ -33,7 +33,7 @@ const Grid = (props) => {
         let yindex = Math.floor(action.y / canvasRef.current.height * row);
         if (xindex >= col) xindex = col - 1;
         if (yindex >= row) yindex = row - 1;
-        console.log(xindex, yindex);
+        // console.log(xindex, yindex);
         return {
             ...state,
             cursorPos: { x: xindex, y: yindex }
@@ -43,7 +43,7 @@ const Grid = (props) => {
 
 
     const updateCanvas = (pos) => {
-        //console.log('update canvas:', state.cursorPos.x, state.cursorPos.y);
+        // console.log('update canvas:', state.cursorPos.x, state.cursorPos.y);
         if (pos === undefined) {
             pos = state.cursorPos;
         }
@@ -76,30 +76,33 @@ const Grid = (props) => {
             context.fillStyle = '#FFA900';
             context.fillRect(targetX * canvas.width / col, targetY * canvas.height / row, canvas.width / col, canvas.height / row);
         }
-
+        
         if (state.cursorPos != null) {
             let xindex = pos.x;
             let yindex = pos.y;
+            // console.log(xindex, yindex, Math.abs(xindex - targetX), Math.abs(yindex - targetY))
             if (hasTarget && Math.abs(xindex - targetX) < targetSize && Math.abs(yindex - targetY) < targetSize) {
                 context.fillStyle = '#52c41a'
                 let timeStamp = new Date().getTime();
+                console.log(timeStamp - holdTime)
                 if (!reached) {
                     setHoldTime(0);
-                    bugout.log('reach', timeStamp);
-                    bugout.log('time', timeStamp - lastTime);
                     //setLogoutput(bugout.getLog());
                     setReached(true);
                 } else {
                     if (holdTime == 0) {
                         setHoldTime(timeStamp);
                     } else {
-                        if (timeStamp - holdTime > 500) {
+                        if (timeStamp - holdTime > 300) {
+                            bugout.log('reach', timeStamp);
+                            bugout.log('time', timeStamp - lastTime);
                             setHoldTime(0);
                             setRandomTarget();
                         }
                     }
                 }
             } else {
+                setReached(false);
                 context.fillStyle = '#000000';
             }
             context.fillRect(xindex * canvas.width / col, yindex * canvas.height / row, canvas.width / col, canvas.height / row);
@@ -122,7 +125,7 @@ const Grid = (props) => {
                 if (items.length > 1) {
                     dispatch({ x: parseFloat(items[1]) * canvasRef.current.width, y: parseFloat(items[2]) * canvasRef.current.height })
                     // cursorPos.current = {x: parseFloat(items[1])*canvasRef.current.width, y: parseFloat(items[2])*canvasRef.current.height};
-                    updateCanvas();
+                    // updateCanvas();
                 }
             });
         });
@@ -222,6 +225,9 @@ const Grid = (props) => {
                     <Col span={4}>
                         <Button disabled={!hasTarget} onClick={e => setRandomTarget()}>Set Random Target</Button>
                     </Col>
+                </Row>
+                <Row>
+                    <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
                 </Row>
 
                 <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">

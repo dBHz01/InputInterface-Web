@@ -14,6 +14,12 @@ const PressureTest = (props) => {
     const [jittor, setJittor] = useState(0.05);
     const [maxforceTime, setMaxforceTime] = useState(5000);
     const [target, setTarget] = useState(1);
+    const [timeLeft, setTimeLeft] = useState(5);
+
+    const setRate = ((target, value) => {
+        setLevel(value);
+        setTarget(target);
+    })
 
     useEffect(() => {
         window.addEventListener('keydown', (event) => {
@@ -112,6 +118,14 @@ const PressureTest = (props) => {
                     case 'maxforce':
                         dispatch({ type: 'maxforce', value: parseFloat(items[1]) });
                         break;
+                    case 'rate':
+                        setRate(parseInt(items[1]), parseInt(items[2]));
+                        break;
+                    case 'timeleft':
+                        setTimeLeft(parseInt(items[1]));
+                        break;
+                    default:
+                        break;
                 }
             });
         });
@@ -186,9 +200,7 @@ const PressureTest = (props) => {
     return (
         <FullScreen handle={fullScreenHandle}>
             <Card title="Pressure Test" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
-                <Button onClick={testMaxForce}>Max Force</Button>
-                <Button onClick={testForceResolution}>Resolution</Button>
-                <br />
+                <h1>剩余时间: {timeLeft} 秒</h1>
                 <Form layout='inline'>
                     <Form.Item layout="inline">
 
