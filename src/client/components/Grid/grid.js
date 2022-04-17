@@ -202,7 +202,7 @@ const Grid = (props) => {
         let targetY = Math.floor(Math.random() * col);
         setTarget({ x: targetX, y: targetY });
         let timeStamp = new Date().getTime();
-        bugout.log('setTarget', timeStamp);
+        bugout.log('setTarget at ', targetX, targetY, timeStamp);
         //setLogoutput(bugout.getLog());
         setLasttime(timeStamp);
         setReached(false);

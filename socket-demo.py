@@ -77,6 +77,10 @@ class CursorClient:
     def sendTimeLeft(self, time):
         self.my_socket.send(('timeleft' + " " + str(int(time)) + "\n").encode())
 
+    def sendCommand(self, paras):
+        ## paras should be a list of str
+        self.my_socket.send(str(" ".join([str(item) for item in paras]) + "\n").encode())
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -90,6 +94,9 @@ if __name__ == '__main__':
     if args.port:
         PORT = args.port
     my_remote_handle = CursorClient(IP, PORT)
+
+    # for status change
+    my_remote_handle.sendCommand(["status", "type"])
 
     # for grid
     # my_remote_handle.sendPos(0.4, 0.6)
@@ -139,20 +146,20 @@ if __name__ == '__main__':
     # time.sleep(1)
 
     # for pressure test
-    my_remote_handle.sendPressureRate(150, 200)
-    time.sleep(1)
-    my_remote_handle.sendMaxForce(0.9)
-    time.sleep(1)
-    my_remote_handle.sendPressure(0.1)
-    time.sleep(1)
-    my_remote_handle.sendPressure(0.13)
-    my_remote_handle.sendPressure(0.2)
-    time.sleep(1)
-    my_remote_handle.sendPressure(0.3)
-    time.sleep(1)
-    my_remote_handle.sendPressure(0.4)
-    time.sleep(1)
-    my_remote_handle.sendPressure(0.38)
+    # my_remote_handle.sendPressureRate(150, 200)
+    # time.sleep(1)
+    # my_remote_handle.sendMaxForce(0.9)
+    # time.sleep(1)
+    # my_remote_handle.sendPressure(0.1)
+    # time.sleep(1)
+    # my_remote_handle.sendPressure(0.13)
+    # my_remote_handle.sendPressure(0.2)
+    # time.sleep(1)
+    # my_remote_handle.sendPressure(0.3)
+    # time.sleep(1)
+    # my_remote_handle.sendPressure(0.4)
+    # time.sleep(1)
+    # my_remote_handle.sendPressure(0.38)
     # time.sleep(6)
     # my_remote_handle.sendPressure(0.41)
 

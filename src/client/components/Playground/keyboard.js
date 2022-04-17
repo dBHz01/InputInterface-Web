@@ -40,9 +40,9 @@ const Keyboard = ({ cRef }) => {
     const [corpusSize, setCorpusSize] = useState(1000);
     const [showSettings, setShowSettings] = useState(false);
     const [keyboardWidth, setKeyboardWidth] = useState(450);
-    const [keyboardHeight, setKeyboardHeight] = useState(225);
+    const [keyboardHeight, setKeyboardHeight] = useState(450);
     const [keyboardPosX, setKeyboardPosX] = useState(0);
-    const [keyboardPosY, setKeyboardPosY] = useState(225);
+    const [keyboardPosY, setKeyboardPosY] = useState(450);
     const [canvasWidth, setCanvasWidth] = useState(450);
     const [canvasHeight, setCanvasHeight] = useState(450);
     const fullScreenHandle = useFullScreenHandle();
@@ -142,9 +142,9 @@ const Keyboard = ({ cRef }) => {
         const canvas = canvasRef.current;
         // let context = canvas.getContext('2d');
         setKeyboardWidth(canvas.width);
-        setKeyboardHeight(canvas.height / 2);
+        setKeyboardHeight(canvas.height);
         setKeyboardPosX(0);
-        setKeyboardPosY(canvas.height / 2);
+        setKeyboardPosY(canvas.height);
         layout.current = new Layout({
             q_pos: q_pos,
             p_pos: p_pos,

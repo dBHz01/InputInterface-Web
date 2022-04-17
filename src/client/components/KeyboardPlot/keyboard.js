@@ -22,7 +22,7 @@ const getTimestamp = () => {
 };
 let logTime = 0;
 const Keyboard = ({ cRef }) => {
-    const canvasRef = useRef({ width: 450, height: 450 });
+    const canvasRef = useRef({ width: 900, height: 450 });
     const sampleSize = 50;
     // const [candidates, setCandidates] = useState([]);
     const isStart = useRef(false);
@@ -39,11 +39,11 @@ const Keyboard = ({ cRef }) => {
     const [useLanguageModel, setUseLanguageModel] = useState(true);
     const [corpusSize, setCorpusSize] = useState(1000);
     const [showSettings, setShowSettings] = useState(false);
-    const [keyboardWidth, setKeyboardWidth] = useState(450);
+    const [keyboardWidth, setKeyboardWidth] = useState(900);
     const [keyboardHeight, setKeyboardHeight] = useState(225);
     const [keyboardPosX, setKeyboardPosX] = useState(0);
     const [keyboardPosY, setKeyboardPosY] = useState(225);
-    const [canvasWidth, setCanvasWidth] = useState(450);
+    const [canvasWidth, setCanvasWidth] = useState(900);
     const [canvasHeight, setCanvasHeight] = useState(450);
     const fullScreenHandle = useFullScreenHandle();
     const [inputText, setInputText] = useState('');
@@ -53,9 +53,10 @@ const Keyboard = ({ cRef }) => {
     const [l_pos, setLPos] = useState({ x: -0.5 * (0.8 - 0.2) / 9 + 0.8, y: 0.5 });
     const [z_pos, setZPos] = useState({ x: 0.5 * (0.75 - 0.25) / 9 + 0.25, y: 0.15 });
     const [m_pos, setMPos] = useState({ x: -0.5 * (0.75 - 0.25) / 9 + 0.75, y: 0.15 });
-    const [candidates, setCandidates] = useState(["hello", "how", "are", "you"]);
+    const [candidates, setCandidates] = useState(["", "", "", ""]);
     const [sentence, setSentence] = useState("");
     const [target, setTarget] = useState("");
+    const [curStatus, setCurStatus] = useState("wait") // wait, type, or choose
 
     const layout = useRef(null);
     // const [layout, setLayout] = useState(new Layout({'width': 450, 'height': 225, 'posx': 0, 'posy': 225}));
@@ -115,6 +116,9 @@ const Keyboard = ({ cRef }) => {
                     break;
                 case 'timestamp':
                     dispatch({ type: 'timestamp', value: items[1] });
+                    break;
+                case 'status':
+                    dispatch({ type: 'status', value: items[1] })
                     break;
                 default:
                     break;
@@ -437,6 +441,7 @@ const Keyboard = ({ cRef }) => {
             if (action.value.length == 0) return state;
             bugout.log(action.value, new Date().getTime());
             let lastSentence = sentence;
+            setCandidates(["", "", "", ""])
             switch (action.value) {
                 case 'click':
                 case 'up':
@@ -562,6 +567,8 @@ const Keyboard = ({ cRef }) => {
             return newState;
         } else if (action.type === 'timestamp') {
             bugout.log(action.value, new Date().getTime());
+        } else if (action.type === 'status') {
+            setCurStatus(action.value);
         }
         return state;
     };
@@ -600,9 +607,10 @@ const Keyboard = ({ cRef }) => {
             <FullScreen handle={fullScreenHandle}>
                 <Card title="Gesture Keyboard" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
                     <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
-                    <h3>下一个单词:{target}</h3>
-                    <h3>输入单词:{state.text}</h3>
-                    <h3>输入句子:{sentence}</h3>
+                    <h3>当前状态: {curStatus === 'wait' ? "等待输入，请松开压力" : (curStatus === 'type' ? "正在输入" : "请选择单词")}</h3>
+                    <h3>下一个单词: {target}</h3>
+                    <h3>输入单词: {state.text}</h3>
+                    <h3>输入句子: {sentence}</h3>
                     <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
                         <Col flex={2} sm={24}>
                             <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} data={state.candidates.length > 0 ? [state.candidates[0], state.candidates[1], state.candidates[2], state.candidates[3]] : []} onMouseDown={e => mouseControl(START, e)} onMouseMove={e => mouseControl(MOVE, e)} onMouseUp={e => mouseControl(END, e)}>

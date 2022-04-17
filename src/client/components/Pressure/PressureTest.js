@@ -9,12 +9,13 @@ import PressureBar from './PressureBar';
 
 
 const PressureTest = (props) => {
-    const [level, setLevel] = useState(2);
+    const [level, setLevel] = useState(200);
     const [range, setRange] = useState(1.0);
     const [jittor, setJittor] = useState(0.05);
     const [maxforceTime, setMaxforceTime] = useState(5000);
-    const [target, setTarget] = useState(1);
+    const [target, setTarget] = useState(50);
     const [timeLeft, setTimeLeft] = useState(5);
+    const [curStatus, setCurStatus] = useState("wait") // wait, press, or end
 
     const setRate = ((target, value) => {
         setLevel(value);
@@ -124,6 +125,8 @@ const PressureTest = (props) => {
                     case 'timeleft':
                         setTimeLeft(parseInt(items[1]));
                         break;
+                    case 'status':
+                        setCurStatus(items[1]);
                     default:
                         break;
                 }
@@ -200,6 +203,7 @@ const PressureTest = (props) => {
     return (
         <FullScreen handle={fullScreenHandle}>
             <Card title="Pressure Test" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
+                <h1>当前状态: {curStatus === 'wait' ? "等待输入，施加压力到标准值后保持" : (curStatus === 'press' ? "请保持压力直到时间结束" : "请松开压力")}</h1>
                 <h1>剩余时间: {timeLeft} 秒</h1>
                 <Form layout='inline'>
                     <Form.Item layout="inline">
