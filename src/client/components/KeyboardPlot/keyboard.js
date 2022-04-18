@@ -109,9 +109,11 @@ const Keyboard = ({ cRef }) => {
                     break;
                 case 'candidates':
                     setCandidates([items[1], items[2], items[3], items[4], items[5]]);
+                    bugout.log('candidates ', items[1], items[2], items[3], items[4], items[5]);
                     dispatch({ type: 'candidates', value: { cands: [items[1], items[2], items[3], items[4], items[5]] } });
                     break;
                 case 'target':
+                    bugout.log('target ', items[1]);
                     setTarget(items[1]);
                     break;
                 case 'timestamp':
