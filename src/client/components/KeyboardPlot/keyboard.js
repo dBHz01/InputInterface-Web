@@ -142,9 +142,10 @@ const Keyboard = ({ cRef }) => {
             keyboardHeight: keyboardHeight,
             keyboardWidth: keyboardWidth,
             candidates: candidates,
+            target: target,
         });
         updateCanvas();
-    }, [keyboardHeight, keyboardWidth, keyboardPosX, keyboardPosY, q_pos, p_pos, a_pos, l_pos, z_pos, m_pos, candidates]);
+    }, [keyboardHeight, keyboardWidth, keyboardPosX, keyboardPosY, q_pos, p_pos, a_pos, l_pos, z_pos, m_pos, candidates, target]);
 
     useEffect(() => {
         updateCanvas();
@@ -170,6 +171,7 @@ const Keyboard = ({ cRef }) => {
             keyboardHeight: keyboardHeight,
             keyboardWidth: keyboardWidth,
             candidates: candidates,
+            target: target,
         });
         updateCanvas();
     };
@@ -449,6 +451,11 @@ const Keyboard = ({ cRef }) => {
                 case 'up':
                     setSentence(lastSentence + " " + state.candidates[0]);
                     bugout.log(state.candidates.length > 0 ? state.candidates[0] : '');
+                    if (state.candidates[0] == target) {
+                        bugout.log("true");
+                    } else {
+                        bugout.log("false");
+                    }
                     return {
                         ...state,
                         text: state.candidates.length > 0 ? state.candidates[0] : '',
@@ -456,6 +463,11 @@ const Keyboard = ({ cRef }) => {
                 case 'right':
                     setSentence(lastSentence + " " + state.candidates[1]);
                     bugout.log(state.candidates.length > 1 ? state.candidates[1] : '');
+                    if (state.candidates[1] == target) {
+                        bugout.log("true");
+                    } else {
+                        bugout.log("false");
+                    }
                     return {
                         ...state,
                         text: state.candidates.length > 1 ? state.candidates[1] : '',
@@ -463,6 +475,11 @@ const Keyboard = ({ cRef }) => {
                 case 'down':
                     setSentence(lastSentence + " " + state.candidates[2]);
                     bugout.log(state.candidates.length > 2 ? state.candidates[2] : '');
+                    if (state.candidates[2] == target) {
+                        bugout.log("true");
+                    } else {
+                        bugout.log("false");
+                    }
                     return {
                         ...state,
                         text: state.candidates.length > 2 ? state.candidates[2] : '',
@@ -470,6 +487,11 @@ const Keyboard = ({ cRef }) => {
                 case 'left':
                     setSentence(lastSentence + " " + state.candidates[3]);
                     bugout.log(state.candidates.length > 3 ? state.candidates[3] : '');
+                    if (state.candidates[3] == target) {
+                        bugout.log("true");
+                    } else {
+                        bugout.log("false");
+                    }
                     return {
                         ...state,
                         text: state.candidates.length > 3 ? state.candidates[3] : '',
@@ -610,9 +632,15 @@ const Keyboard = ({ cRef }) => {
                 <Card title="Gesture Keyboard" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
                     <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
                     <h3>当前状态: {curStatus === 'wait' ? "等待输入，请松开压力" : (curStatus === 'type' ? "正在输入" : "请选择单词")}</h3>
-                    <h3>下一个单词: {target}</h3>
-                    <h3>输入单词: {state.text}</h3>
-                    <h3>输入句子: {sentence}</h3>
+                    {/* <h3>下一个单词: {target}</h3> */}
+                    {/* <h3>输入单词: {state.text}</h3> */}
+                    {/* <h3>输入句子: {sentence}</h3> */}
+                    <Row style={{ textAlign: 'center', height: '100%'}} justify="center" align="middle">
+                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>输入句子: {sentence}</h3>
+                    </Row>
+                    <Row style={{ textAlign: 'center', height: '100%'}} justify="center" align="middle">
+                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>待输入单词: {target}</h3>
+                    </Row>
                     <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
                         <Col flex={2} sm={24}>
                             <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} data={state.candidates.length > 0 ? [state.candidates[0], state.candidates[1], state.candidates[2], state.candidates[3]] : []} onMouseDown={e => mouseControl(START, e)} onMouseMove={e => mouseControl(MOVE, e)} onMouseUp={e => mouseControl(END, e)}>

@@ -13,11 +13,13 @@ export default class Layout { // QWERTY layout
     keyboardWidth;
     keyboardHeight;
     candidates;
+    target;
     constructor(para) {
         this.posFirstLine = new Map();
         this.posSecondLine = new Map();
         this.posThirdLine = new Map();
         this.candidates = para.candidates;
+        this.target = para.target;
         this.posx = para.posx;
         this.posy = para.posy;
         this.keyboardWidth = para.keyboardWidth;
@@ -43,18 +45,18 @@ export default class Layout { // QWERTY layout
     }
     render(context) {
         context.textAlign = 'center';
-        context.font = '20px 微软雅黑';
+        context.font = 'normal bold 30px Arial,sans-serif';
         this.posFirstLine.forEach((value, key) => {
             context.strokeRect(this.posx + (value.x - this.firstLineKeyWidth / 2) * this.keyboardWidth, this.posy + (value.y - this.firstLineKeyHeight / 2) * this.keyboardHeight, this.firstLineKeyWidth * this.keyboardWidth, this.firstLineKeyHeight * this.keyboardHeight);
-            context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight);
+            context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight + 9);
         })
         this.posSecondLine.forEach((value, key) => {
             context.strokeRect(this.posx + (value.x - this.secondLineKeyWidth / 2) * this.keyboardWidth, this.posy + (value.y - this.secondLineKeyHeight / 2) * this.keyboardHeight, this.secondLineKeyWidth * this.keyboardWidth, this.secondLineKeyHeight * this.keyboardHeight);
-            context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight);
+            context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight + 9);
         })
         this.posThirdLine.forEach((value, key) => {
             context.strokeRect(this.posx + (value.x - this.thirdLineKeyWidth / 2) * this.keyboardWidth, this.posy + (value.y - this.thirdLineKeyHeight / 2) * this.keyboardHeight, this.thirdLineKeyWidth * this.keyboardWidth, this.thirdLineKeyHeight * this.keyboardHeight);
-            context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight);
+            context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight + 9);
         })
         context.moveTo(this.posx + 0.5 * this.keyboardWidth, 0);
         context.lineTo(this.posx + 0.5 * this.keyboardWidth, this.keyboardHeight);
@@ -69,7 +71,12 @@ export default class Layout { // QWERTY layout
         context.lineTo(this.keyboardWidth, this.posy);
         context.stroke();
         for (let i = 0; i < 4; i++) {
-            context.fillText(this.candidates[i], this.posx + (0.5 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.5 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight);
+            if (this.candidates[i] == this.target) {
+                context.fillStyle = "#5cb85c";
+                context.fillRect(this.posx + (0.5 - 0.5 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.5 + 0.5 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
+            }
+            context.fillStyle = "black";
+            context.fillText(this.candidates[i], this.posx + (0.5 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.5 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight + 8);
         }
         // console.log(this.posx + (this.posFirstLine.get('q').x - this.firstLineKeyWidth / 2) * this.keyboardWidth)
         // console.log(this.posy + (this.posFirstLine.get('q').y - this.firstLineKeyHeight / 2) * this.keyboardHeight)
