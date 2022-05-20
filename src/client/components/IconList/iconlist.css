@@ -1,0 +1,68 @@
+.label {
+    width: 125px;
+    margin: auto;
+    white-space: nowrap;
+}
+
+.observer {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: flex;
+    position: relative;
+    border: solid 1px #C5CAE9;
+    border-radius: 4px;
+    transition: border .2s ease-in-out;
+}
+
+.observer:hover {
+    border-color: #3F51B5;
+}
+
+.target_observer {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: flex;
+    position: relative;
+    border: solid 1px #C5CAE9;
+    border-radius: 4px;
+    transition: border .2s ease-in-out;
+    background-color: #5B9BD5;
+}
+
+.target_observer:hover {
+    border-color: #3F51B5;
+}
+
+.reached_observer {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: flex;
+    position: relative;
+    border: solid 1px #C5CAE9;
+    border-radius: 4px;
+    transition: border .2s ease-in-out;
+    background-color: #70AD47;
+}
+
+.reached_observer:hover {
+    border-color: #3F51B5;
+}
+
+.hover_observer {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: flex;
+    position: relative;
+    border: solid 1px #C5CAE9;
+    border-radius: 4px;
+    transition: border .2s ease-in-out;
+    background-color: #F5F5F5;
+}
+
+.hover_observer:hover {
+    border-color: #3F51B5;
+}

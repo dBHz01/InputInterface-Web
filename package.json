@@ -13,12 +13,14 @@
   "author": "Sandeep Raveesh",
   "license": "ISC",
   "dependencies": {
-    "antd": "^4.7.3",
+    "@ant-design/icons": "^4.7.0",
+    "antd": "^4.20.5",
     "babel-polyfill": "^6.26.0",
     "debugout.js": "^1.0.0",
     "express": "^4.16.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-hover-observer": "^2.1.1",
     "react-router-dom": "^5.2.0",
     "socket.io": "^2.3.0"
   },

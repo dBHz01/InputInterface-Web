@@ -71,9 +71,9 @@ export default class Layout { // QWERTY layout
         context.lineTo(this.keyboardWidth, this.posy);
         context.stroke();
         for (let i = 0; i < 4; i++) {
-            if (this.candidates[i] == this.target) {
-                context.fillStyle = "#5cb85c";
-                context.fillRect(this.posx + (0.5 - 0.5 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.5 + 0.5 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
+            if (this.candidates[i] == this.target && this.candidates[i] != "") {
+                context.fillStyle = "#70ad47";
+                context.fillRect(this.posx + (0.25 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.75 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
             }
             context.fillStyle = "black";
             context.fillText(this.candidates[i], this.posx + (0.5 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.5 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight + 8);

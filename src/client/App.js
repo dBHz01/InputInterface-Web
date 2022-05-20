@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import './app.css';
 import Gloves from './components/Gloves/gloves';
 import Grid from './components/Grid/grid';
+import IconList from './components/IconList/iconlist';
 import ChineseIME from './components/ChineseIME/ChineseIME';
 import Keyboard from './components/Keyboard/keyboard';
 import KeyboardPlot from './components/KeyboardPlot/keyboard';
@@ -60,6 +61,9 @@ const Pagelayout = () => {
                     <Menu.Item key="/grid" icon={<IconFont type="iconcursor" />}>
                         <Link to="/grid">Grid</Link>
                     </Menu.Item>
+                    <Menu.Item key="/iconlist" icon={<IconFont type="iconcursor" />}>
+                        <Link to="/iconlist">Iconlist</Link>
+                    </Menu.Item>
                     <Menu.Item key="/morse" icon={<IconFont type="iconmorse-code" />}>
                         <Link to="/morse">Morse Code</Link>
                     </Menu.Item>
@@ -89,6 +93,7 @@ const Pagelayout = () => {
                             <Route path="/keyboardplot"><KeyboardPlot /></Route>
                             <Route path="/playground"><Playground /></Route>
                             <Route path="/grid"><Grid /></Route>
+                            <Route path="/iconlist"><IconList /></Route>
                             <Route path="/gloves"><Gloves /></Route>
                             <Route path="/morse"><MorseCode /></Route>
                             <Route path="/pressure"><PressureTest /></Route>
