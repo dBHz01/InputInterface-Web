@@ -27,7 +27,7 @@ const IconList = (props) => {
     const [lastTime, setLasttime] = useState(0);
     const [holdTime, setHoldTime] = useState(0);
     const [logOutput, setLogoutput] = useState('');
-    const [rowNum, setRowNum] = useState(6)
+    const [rowNum, setRowNum] = useState(8)
     const [colNum, setColNum] = useState(10)
 
     let settingsExtra = () => (
@@ -135,7 +135,7 @@ const IconList = (props) => {
         }, 50);
         return () => { clearInterval(interval) }
     }, [reached, holdTime]);
-    
+
     useEffect(() => {
         bugout.log("size ", colNum, rowNum);
     }, [colNum, rowNum]);
@@ -144,12 +144,14 @@ const IconList = (props) => {
     return (
         <FullScreen handle={fullScreenHandle}>
             <Card title="Cursor Pad" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
-                <Row>
-                    <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
-                </Row>
-                <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
-                    {icons}
-                </Row>
+                <div style={{ textAlign: 'center'}}>
+                    <Row>
+                        <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
+                    </Row>
+                    <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
+                        {icons}
+                    </Row>
+                </div>
 
                 <Drawer
                     visible={showSettings}

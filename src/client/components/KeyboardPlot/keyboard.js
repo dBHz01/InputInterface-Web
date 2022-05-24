@@ -39,12 +39,12 @@ const Keyboard = ({ cRef }) => {
     const [useLanguageModel, setUseLanguageModel] = useState(true);
     const [corpusSize, setCorpusSize] = useState(1000);
     const [showSettings, setShowSettings] = useState(false);
-    const [keyboardWidth, setKeyboardWidth] = useState(900);
-    const [keyboardHeight, setKeyboardHeight] = useState(225);
+    const [keyboardWidth, setKeyboardWidth] = useState(1500);
+    const [keyboardHeight, setKeyboardHeight] = useState(350);
     const [keyboardPosX, setKeyboardPosX] = useState(0);
-    const [keyboardPosY, setKeyboardPosY] = useState(225);
-    const [canvasWidth, setCanvasWidth] = useState(900);
-    const [canvasHeight, setCanvasHeight] = useState(450);
+    const [keyboardPosY, setKeyboardPosY] = useState(350);
+    const [canvasWidth, setCanvasWidth] = useState(1500);
+    const [canvasHeight, setCanvasHeight] = useState(700);
     const fullScreenHandle = useFullScreenHandle();
     const [inputText, setInputText] = useState('');
     const [q_pos, setQPos] = useState({ x: 0.5 * (0.9 - 0.1) / 10 + 0.1, y: 0.85 });
@@ -56,7 +56,9 @@ const Keyboard = ({ cRef }) => {
     const [candidates, setCandidates] = useState(["", "", "", ""]);
     const [sentence, setSentence] = useState("");
     const [target, setTarget] = useState("");
-    const [curStatus, setCurStatus] = useState("wait") // wait, type, or choose
+    const [curStatus, setCurStatus] = useState("wait"); // wait, type, or choose
+    const [correctPos, setCorrectPos] = useState(-1);
+    const [errorPos, setErrorPos] = useState(-1);
 
     const layout = useRef(null);
     // const [layout, setLayout] = useState(new Layout({'width': 450, 'height': 225, 'posx': 0, 'posy': 225}));
@@ -64,12 +66,6 @@ const Keyboard = ({ cRef }) => {
     useEffect(() => {
         init();
     }, [canvasRef, canvasHeight, canvasWidth]);
-
-    useEffect(() => {
-        loadCorpus();
-    }, []);
-
-
 
     useEffect(() => {
         const socket = io(`${document.domain}:8080`);
@@ -143,9 +139,11 @@ const Keyboard = ({ cRef }) => {
             keyboardWidth: keyboardWidth,
             candidates: candidates,
             target: target,
+            correctPos: correctPos,
+            errorPos: errorPos,
         });
         updateCanvas();
-    }, [keyboardHeight, keyboardWidth, keyboardPosX, keyboardPosY, q_pos, p_pos, a_pos, l_pos, z_pos, m_pos, candidates, target]);
+    }, [keyboardHeight, keyboardWidth, keyboardPosX, keyboardPosY, q_pos, p_pos, a_pos, l_pos, z_pos, m_pos, candidates, target, correctPos, errorPos]);
 
     useEffect(() => {
         updateCanvas();
@@ -172,6 +170,8 @@ const Keyboard = ({ cRef }) => {
             keyboardWidth: keyboardWidth,
             candidates: candidates,
             target: target,
+            correctPos: correctPos,
+            errorPos: errorPos,
         });
         updateCanvas();
     };
@@ -190,91 +190,6 @@ const Keyboard = ({ cRef }) => {
             dispatch({ type: 'event', value: { type: type, pos: position } });
             //onEvent(type, position);
         }
-    };
-
-
-    const openNotification = (type, content) => {
-        notification[type]({
-            message: content,
-        });
-    };
-
-
-    let loadCorpus = () => {
-        fetch('/corpus.txt')
-            .then(res => res.text())
-            .then((data) => {
-                const lineData = data.split('\n');
-                const tempDict = [];
-                for (let i = 0; i < lineData.length; i++) {
-                    const item = lineData[i].split(' ');
-                    const word = item[0].trim();
-                    const freq = parseInt(item[1]);
-                    tempDict.push([word, freq]);
-                }
-                setWordDict(tempDict);
-                setCorpusSize(tempDict.length);
-                // wordDict.current = tempDict;
-                openNotification('success', '词库加载成功,共有' + tempDict.length + '个词');
-            })
-            .catch((err) => {
-                openNotification('error', `词库加载失败${err}`);
-            });
-    };
-
-    const getPath = (word) => {
-        const ret = [];
-        for (const i of word) {
-            ret.push(layout.current.getCenter(i));
-        }
-        return resamplePath(ret);
-    };
-
-    let resamplePath = (path) => {
-        const n = path.length;
-        const ret = [];
-        if (n == 1) {
-            for (let i = 0; i < sampleSize; i++) {
-                ret.push(path[0]);
-            }
-            return ret;
-        }
-        let length = 0;
-        for (let i = 0; i < n - 1; i++) {
-            length += distance(path[i], path[i + 1]);
-        }
-        const interval = length / (sampleSize - 1);
-        let lastPos = path[0];
-        let currLen = 0;
-        let no = 1;
-        ret.push(path[0]);
-        while (no < n) {
-            const dist = distance(lastPos, path[no]);
-            if (currLen + dist >= interval && dist > 0) {
-                const ratio = (interval - currLen) / dist;
-                const { x, y } = lastPos;
-                lastPos = {
-                    x: x + ratio * (path[no].x - x),
-                    y: y + ratio * (path[no].y - y),
-                };
-                ret.push(lastPos);
-                currLen = 0;
-            } else {
-                currLen += dist;
-                lastPos = path[no];
-                no++;
-            }
-        }
-        for (let i = ret.length; i < sampleSize; i++) {
-            ret.push(path[n - 1]);
-        }
-        return ret;
-    };
-
-    let distance = (t1, t2) => {
-        const dx = t1.x - t2.x;
-        const dy = t1.y - t2.y;
-        return Math.sqrt(dx * dx + dy * dy);
     };
 
     const clearCanvas = () => {
@@ -348,104 +263,12 @@ const Keyboard = ({ cRef }) => {
         });
     }, []);
 
-    const logGaussian = (x, mu, sigma) => {
-        const ret = -(x - mu) * (x - mu) / 2 / sigma / sigma - Math.log(Math.sqrt(2 * Math.PI)) - Math.log(sigma);
-        return ret;
-    };
-
-    const calculateLocationProbability = (p1, p2, word) => {
-        let ret = 0;
-        let alpha = 1 / sampleSize;
-        for (let i = 0; i < sampleSize; i++) {
-            if (i == 0 || i == sampleSize - 1) {
-                alpha = 0.2;
-            } else {
-                alpha = 0.6 / (sampleSize - 2);
-            }
-            ret += alpha * logGaussian(p1[i].x - p2[i].x, 0, layout.current.keyWidth * 0.7);
-            ret += alpha * logGaussian(p1[i].y - p2[i].y, 0, layout.current.keyHeight * 0.7);
-        }
-        ret *= sampleSize;
-        // ret = ret / sampleSize * word.length;
-        return ret;
-    };
-
-
-    const normalizePath = (p) => {
-        let minx = Number.MAX_VALUE;
-        let maxx = Number.MIN_VALUE;
-        let miny = Number.MAX_VALUE;
-        let maxy = Number.MIN_VALUE;
-        const ret = [];
-        let sumx = 0;
-        let sumy = 0;
-        for (let i = 0; i < p.length; i++) {
-            if (p[i].x < minx) minx = p[i].x;
-            if (p[i].x > maxx) maxx = p[i].x;
-            if (p[i].y < miny) miny = p[i].y;
-            if (p[i].y > maxy) maxy = p[i].y;
-            sumx += p[i].x;
-            sumy += p[i].y;
-        }
-        let scale = 1;
-        if (Math.max(maxx - minx, maxy - miny) > 0) {
-            scale = 1 / Math.max(maxx - minx, maxy - miny);
-        }
-        const center = { x: sumx / p.length, y: sumy / p.length };
-        for (let i = 0; i < p.length; i++) {
-            ret.push({
-                x: (p[i].x - center.x) * scale,
-                y: (p[i].y - center.y) * scale,
-            });
-        }
-        return ret;
-    };
-
-    let calculateShapeProbability = (p1, p2, word) => {
-        let ret = 0;
-        const np1 = normalizePath(p1);
-        const np2 = normalizePath(p2);
-        for (let i = 0; i < sampleSize; i++) {
-            ret += logGaussian(np1[i].x - np2[i].x, 0, 0.3);
-            ret += logGaussian(np1[i].y - np2[i].y, 0, 0.3);
-        }
-        // ret = ret / sampleSize * word.length;
-        return ret;
-    };
-
-    const calculateCandidate = (path) => {
-        const userP = resamplePath(path);
-        const ans = [];
-        for (let i = 0; i < corpusSize; i++) {
-            const ele = wordDict[i];
-            // console.log(ele);
-            const word = ele[0];
-            const freq = ele[1];
-            const path = getPath(word);
-            // let dis = similarity(userP, path);
-            const locationScore = calculateLocationProbability(userP, path, word);
-            const shapeScore = calculateShapeProbability(userP, path, word);
-            let pro = locationScore;
-            if (useLanguageModel) {
-                pro += Math.log(freq);
-            }
-            if (useRelativeModel) {
-                pro += shapeScore;
-            }
-            ans.push([word, pro, locationScore, shapeScore, Math.log(freq)]);
-        }
-        ans.sort((a, b) => b[1] - a[1]);
-        // console.log(ans);
-        // setCandidates(ans.slice(0, 5));
-        return ans.slice(0, 5);
-    };
 
     const reducer = (state, action) => {
         if (action.type === 'select') {
             if (action.value.length == 0) return state;
             bugout.log(action.value, new Date().getTime());
             let lastSentence = sentence;
-            setCandidates(["", "", "", ""])
             switch (action.value) {
                 case 'click':
                 case 'up':
@@ -453,7 +276,17 @@ const Keyboard = ({ cRef }) => {
                     bugout.log(state.candidates.length > 0 ? state.candidates[0] : '');
                     if (state.candidates[0] == target) {
                         bugout.log("true");
+                        setCorrectPos(0);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setCorrectPos(-1);
+                        }, 500);
                     } else {
+                        setErrorPos(0);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setErrorPos(-1);
+                        }, 500);
                         bugout.log("false");
                     }
                     return {
@@ -465,7 +298,17 @@ const Keyboard = ({ cRef }) => {
                     bugout.log(state.candidates.length > 1 ? state.candidates[1] : '');
                     if (state.candidates[1] == target) {
                         bugout.log("true");
+                        setCorrectPos(1);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setCorrectPos(-1);
+                        }, 500);
                     } else {
+                        setErrorPos(1);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setErrorPos(-1);
+                        }, 500);
                         bugout.log("false");
                     }
                     return {
@@ -477,7 +320,17 @@ const Keyboard = ({ cRef }) => {
                     bugout.log(state.candidates.length > 2 ? state.candidates[2] : '');
                     if (state.candidates[2] == target) {
                         bugout.log("true");
+                        setCorrectPos(2);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setCorrectPos(-1);
+                        }, 500);
                     } else {
+                        setErrorPos(2);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setErrorPos(-1);
+                        }, 500);
                         bugout.log("false");
                     }
                     return {
@@ -489,7 +342,17 @@ const Keyboard = ({ cRef }) => {
                     bugout.log(state.candidates.length > 3 ? state.candidates[3] : '');
                     if (state.candidates[3] == target) {
                         bugout.log("true");
+                        setCorrectPos(3);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setCorrectPos(-1);
+                        }, 500);
                     } else {
+                        setErrorPos(3);
+                        setTimeout(function () {
+                            setCandidates(["", "", "", ""])
+                            setErrorPos(-1);
+                        }, 500);
                         bugout.log("false");
                     }
                     return {
@@ -635,19 +498,20 @@ const Keyboard = ({ cRef }) => {
                     {/* <h3>下一个单词: {target}</h3> */}
                     {/* <h3>输入单词: {state.text}</h3> */}
                     {/* <h3>输入句子: {sentence}</h3> */}
-                    <Row style={{ textAlign: 'center', height: '100%'}} justify="center" align="middle">
-                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>输入句子: {sentence}</h3>
-                    </Row>
-                    <Row style={{ textAlign: 'center', height: '100%'}} justify="center" align="middle">
-                        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>待输入单词: {target}</h3>
-                    </Row>
-                    <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
-                        <Col flex={2} sm={24}>
-                            <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} data={state.candidates.length > 0 ? [state.candidates[0], state.candidates[1], state.candidates[2], state.candidates[3]] : []} onMouseDown={e => mouseControl(START, e)} onMouseMove={e => mouseControl(MOVE, e)} onMouseUp={e => mouseControl(END, e)}>
-                            </canvas>
-                            {/* <canvas ref={canvasRef} width="450" height="450"/> */}
-                        </Col>
-                    </Row>
+                    <div style={{ textAlign: 'center' }}>
+                        <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
+                            <h3 style={{ fontSize: '30px', fontWeight: 'bold' }}>输入句子: {sentence}</h3>
+                        </Row>
+                        <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
+                            <h3 style={{ fontSize: '30px', fontWeight: 'bold' }}>待输入单词: {target}</h3>
+                        </Row>
+                        <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
+                            <Col flex={2} sm={24}>
+                                <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} data={state.candidates.length > 0 ? [state.candidates[0], state.candidates[1], state.candidates[2], state.candidates[3]] : []} onMouseDown={e => mouseControl(START, e)} onMouseMove={e => mouseControl(MOVE, e)} onMouseUp={e => mouseControl(END, e)}>
+                                </canvas>
+                            </Col>
+                        </Row>
+                    </div>
                     <Drawer
                         visible={showSettings}
                         onClose={settingsClosed}
@@ -674,14 +538,14 @@ const Keyboard = ({ cRef }) => {
                             <Form.Item label="输入区域大小">
                                 <Row gutter={16}>
                                     <Col flex={1}>
-                                        <Form.Item label="宽(0-1000)" layout="horizontal">
-                                            <InputNumber min={0} max={1000} onChange={v => setCanvasWidth(v)} value={canvasWidth} />
+                                        <Form.Item label="宽(0-10000)" layout="horizontal">
+                                            <InputNumber min={0} max={10000} onChange={v => setCanvasWidth(v)} value={canvasWidth} />
                                         </Form.Item>
                                     </Col>
 
                                     <Col flex={1}>
-                                        <Form.Item label="高(0-1000)" layout="horizontal">
-                                            <InputNumber min={0} max={1000} onChange={v => setCanvasHeight(v)} value={canvasHeight} />
+                                        <Form.Item label="高(0-10000)" layout="horizontal">
+                                            <InputNumber min={0} max={10000} onChange={v => setCanvasHeight(v)} value={canvasHeight} />
                                         </Form.Item>
                                     </Col>
                                 </Row>

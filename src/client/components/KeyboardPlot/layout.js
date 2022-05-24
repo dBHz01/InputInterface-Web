@@ -14,12 +14,16 @@ export default class Layout { // QWERTY layout
     keyboardHeight;
     candidates;
     target;
+    correctPos;
+    errorPos;
     constructor(para) {
         this.posFirstLine = new Map();
         this.posSecondLine = new Map();
         this.posThirdLine = new Map();
         this.candidates = para.candidates;
         this.target = para.target;
+        this.correctPos = para.correctPos;
+        this.errorPos = para.errorPos;
         this.posx = para.posx;
         this.posy = para.posy;
         this.keyboardWidth = para.keyboardWidth;
@@ -46,6 +50,15 @@ export default class Layout { // QWERTY layout
     render(context) {
         context.textAlign = 'center';
         context.font = 'normal bold 30px Arial,sans-serif';
+        if (this.correctPos >= 0) {
+            context.fillStyle = "#70ad47";
+            context.fillRect(this.posx + (0.25 - 0.25 * Math.pow(-1, Math.floor((this.correctPos + 1) / 2))) * this.keyboardWidth, this.posy - (0.75 + 0.25 * Math.pow(-1, Math.floor(this.correctPos / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
+        }
+        if (this.errorPos >= 0) {
+            context.fillStyle = "#ff3b3b";
+            context.fillRect(this.posx + (0.25 - 0.25 * Math.pow(-1, Math.floor((this.errorPos + 1) / 2))) * this.keyboardWidth, this.posy - (0.75 + 0.25 * Math.pow(-1, Math.floor(this.errorPos / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
+        }
+        context.fillStyle = "black";
         this.posFirstLine.forEach((value, key) => {
             context.strokeRect(this.posx + (value.x - this.firstLineKeyWidth / 2) * this.keyboardWidth, this.posy + (value.y - this.firstLineKeyHeight / 2) * this.keyboardHeight, this.firstLineKeyWidth * this.keyboardWidth, this.firstLineKeyHeight * this.keyboardHeight);
             context.fillText(key.toUpperCase(), this.posx + value.x * this.keyboardWidth, this.posy + value.y * this.keyboardHeight + 9);
@@ -71,10 +84,10 @@ export default class Layout { // QWERTY layout
         context.lineTo(this.keyboardWidth, this.posy);
         context.stroke();
         for (let i = 0; i < 4; i++) {
-            if (this.candidates[i] == this.target && this.candidates[i] != "") {
-                context.fillStyle = "#70ad47";
-                context.fillRect(this.posx + (0.25 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.75 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
-            }
+            // if (this.candidates[i] == this.target && this.candidates[i] != "") {
+            //     context.fillStyle = "#70ad47";
+            //     context.fillRect(this.posx + (0.25 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.75 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight, this.keyboardWidth / 2, this.keyboardHeight / 2);
+            // }
             context.fillStyle = "black";
             context.fillText(this.candidates[i], this.posx + (0.5 - 0.25 * Math.pow(-1, Math.floor((i + 1) / 2))) * this.keyboardWidth, this.posy - (0.5 + 0.25 * Math.pow(-1, Math.floor(i / 2))) * this.keyboardHeight + 8);
         }
