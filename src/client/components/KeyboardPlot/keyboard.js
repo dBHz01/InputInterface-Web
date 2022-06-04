@@ -494,16 +494,16 @@ const Keyboard = ({ cRef }) => {
             <FullScreen handle={fullScreenHandle}>
                 <Card title="Gesture Keyboard" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
                     <Button onClick={e => { bugout.downloadLog() }}>Download Log</Button>
-                    <h3>当前状态: {curStatus === 'wait' ? "等待输入，请松开压力" : (curStatus === 'type' ? "正在输入" : "请选择单词")}</h3>
+                    <h3>Current status: {curStatus === 'wait' ? "waiting for input" : (curStatus === 'type' ? "typing" : "choose a word")}</h3>
                     {/* <h3>下一个单词: {target}</h3> */}
                     {/* <h3>输入单词: {state.text}</h3> */}
                     {/* <h3>输入句子: {sentence}</h3> */}
                     <div style={{ textAlign: 'center' }}>
                         <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
-                            <h3 style={{ fontSize: '30px', fontWeight: 'bold' }}>输入句子: {sentence}</h3>
+                            <h3 style={{ fontSize: '30px', fontWeight: 'bold' }}>Input History: {sentence}</h3>
                         </Row>
                         <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
-                            <h3 style={{ fontSize: '30px', fontWeight: 'bold' }}>待输入单词: {target}</h3>
+                            <h3 style={{ fontSize: '30px', fontWeight: 'bold' }}>Target Word: {target}</h3>
                         </Row>
                         <Row style={{ textAlign: 'center', height: '100%' }} justify="center" align="middle">
                             <Col flex={2} sm={24}>

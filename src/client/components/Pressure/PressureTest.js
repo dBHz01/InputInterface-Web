@@ -203,20 +203,8 @@ const PressureTest = (props) => {
     return (
         <FullScreen handle={fullScreenHandle}>
             <Card title="Pressure Test" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
-                <h1>当前状态: {curStatus === 'wait' ? "等待输入，施加压力到标准值后保持" : (curStatus === 'press' ? "请保持压力直到时间结束" : "请松开压力")}</h1>
-                <h1>剩余时间: {timeLeft} 秒</h1>
-                <Form layout='inline'>
-                    <Form.Item layout="inline">
-
-                        <Form.Item label="分级">
-                            <InputNumber min={2} max={30000} step={1} onChange={v => setLevel(v)} value={level} />
-                        </Form.Item>
-                        <Form.Item label="目标">
-                            <InputNumber min={0} max={level - 1} step={1} onChange={v => setTarget(v)} value={target} />
-                        </Form.Item>
-                    </Form.Item>
-                </Form>
-
+                <h1>Current status: {curStatus === 'wait' ? "waiting for input" : (curStatus === 'press' ? "keep pressing till the end" : "please loosen the pressure")}</h1>
+                <h1>Time remaining: {timeLeft} s</h1>
                 <Divider>Max Force : {state.maxForce === null ? '?' : state.maxForce}</Divider>
                 <Divider>Pressure:</Divider>
                 <Row>
@@ -228,6 +216,14 @@ const PressureTest = (props) => {
                     width={720}
                     title='设置'>
                     <Form layout='horizontal' {...formLayout}>
+                        <Form.Item layout="inline">
+                            <Form.Item label="分级">
+                                <InputNumber min={2} max={30000} step={1} onChange={v => setLevel(v)} value={level} />
+                            </Form.Item>
+                            <Form.Item label="目标">
+                                <InputNumber min={0} max={level - 1} step={1} onChange={v => setTarget(v)} value={target} />
+                            </Form.Item>
+                        </Form.Item>
                         <Form.Item layout="horizontal" {...formLayout}>
                             <Form.Item label="压力最大可能值">
                                 <InputNumber
