@@ -42,10 +42,10 @@ const Gloves = () => {
     const fullScreenHandle = useFullScreenHandle();
     const formLayout = {
         labelCol: {
-          span: 8,
+            span: 8,
         },
         wrapperCol: {
-          span: 16,
+            span: 16,
         },
         labelAlign: 'left'
     };
@@ -81,8 +81,8 @@ const Gloves = () => {
             case 'next':
                 if (state.currTask < 0 || state.currTask >= config.taskNum) { return state; }
                 clearTimeout(taskTimeout);
-                if (state.currTask+1 !== config.taskNum) {
-                    taskTimeout = setTimeout(()=>dispatch('next'), config.t2);
+                if (state.currTask + 1 !== config.taskNum) {
+                    taskTimeout = setTimeout(() => dispatch('next'), config.t2);
                 }
                 return {
                     ...state,
@@ -92,7 +92,7 @@ const Gloves = () => {
                 };
             case 'click':
                 if (state.currTask < 0 || state.currTask >= config.taskNum) { return state; }
-                if (state.click) {return state;}
+                if (state.click) { return state; }
                 clearTimeout(taskTimeout);
                 setTimeout(() => dispatch('next'), config.duration);
                 return {
@@ -135,7 +135,7 @@ const Gloves = () => {
                 throw new Error();
         }
     };
-    const [state, dispatch] = useReducer(reducer, {pos: config.initPos, currTask:-1, click:false});
+    const [state, dispatch] = useReducer(reducer, { pos: config.initPos, currTask: -1, click: false });
 
 
     useEffect(() => {
@@ -166,12 +166,12 @@ const Gloves = () => {
                     return;
             }
         });
-        console.log("trying to connect to "+ document.domain+':8080');
-        const socket = io(document.domain+':8080');
+        console.log("trying to connect to " + document.domain + ':8080');
+        const socket = io(document.domain + ':8080');
         socket.on('connect', () => {
-            console.log(document.domain+':8080'+' connected!!');
+            console.log(document.domain + ':8080' + ' connected!!');
         });
-        socket.on('data', function(data) {
+        socket.on('data', function (data) {
             let lines = data.split('\n');
             lines.forEach(element => {
                 if (element.length > 0) {
@@ -190,19 +190,19 @@ const Gloves = () => {
             status = state.click ? 'clicked' : 'selected';
         }
         buttons.push(
-          <Col key={i.toString()} span={24 / config.col}>
-            <Avatar size={128} className={status}>{config.labels[i]}</Avatar>
-          </Col>,
+            <Col key={i.toString()} span={24 / config.col}>
+                <Avatar shape="square" size={128} className={status}>{config.labels[i]}</Avatar>
+            </Col>,
         );
     }
 
     let settingsExtra = () => (
         <Space>
-        <SettingOutlined onClick={event=>setShowSettings(true)}/>
-        {fullScreenHandle.active
-          ? <FullscreenExitOutlined onClick={fullScreenHandle.exit}/>
-          : <FullscreenOutlined onClick={fullScreenHandle.enter}/>
-        }
+            <SettingOutlined onClick={event => setShowSettings(true)} />
+            {fullScreenHandle.active
+                ? <FullscreenExitOutlined onClick={fullScreenHandle.exit} />
+                : <FullscreenOutlined onClick={fullScreenHandle.enter} />
+            }
         </Space>
     );
 
@@ -212,28 +212,28 @@ const Gloves = () => {
 
 
     return (
-      <FullScreen handle={fullScreenHandle}>
-        <Card title="Gloves" extra={settingsExtra()} style={{ height: '100%' }} bodyStyle={{ height: '100%' }}>
-            <div style={{textAlign: 'center'}}>
-                <Button onClick={() => dispatch('start')} disabled={state.currTask >= 0 && state.currTask < config.taskNum}>开始</Button>
-                <Button onClick={() => dispatch('next')} disabled={state.currTask < 0 || state.currTask >= config.taskNum}>下一个</Button>
-                <Button onClick={() => dispatch('end')} disabled={state.currTask < 0 || state.currTask >= config.taskNum}>结束</Button>
-            </div>
-            <div className="task">
-            {state.currTask < 0 && '未开始'}
-            {state.currTask >= 0 && state.currTask < config.taskNum
-                && `${state.currTask + 1}/${config.taskNum}:点击 ${state.tasks[state.currTask]} 按钮`}
-            {state.currTask >= config.taskNum && '已结束'}
-            </div>
-            <Divider />
-            <Row justify="center" style={{ textAlign: 'center' }} gutter={[10, 40]}>
-            {buttons}
-            </Row>
-            <Drawer 
-                visible={showSettings} 
-                onClose={settingsClosed}
-                width={720}
-                title='设置'>
+        <FullScreen handle={fullScreenHandle} >
+            <Card title="Gloves" extra={settingsExtra()} headStyle={{ background: '#323233', color: '#888e8e', border: '0px' }} style={{ height: '100%' }} bodyStyle={{ height: '100%', background: '#1e1e1e', border: '0px' }} >
+                <div style={{ textAlign: 'center' }}>
+                    <Button style={{ background: '#a9a9a9', border: '0px', margin: '10px' }} onClick={() => dispatch('start')} disabled={state.currTask >= 0 && state.currTask < config.taskNum}>开始</Button>
+                    <Button style={{ background: '#a9a9a9', border: '0px', margin: '10px' }} onClick={() => dispatch('next')} disabled={state.currTask < 0 || state.currTask >= config.taskNum}>下一个</Button>
+                    <Button style={{ background: '#a9a9a9', border: '0px', margin: '10px' }} onClick={() => dispatch('end')} disabled={state.currTask < 0 || state.currTask >= config.taskNum}>结束</Button>
+                </div>
+                <div className="task">
+                    {state.currTask < 0 && '未开始'}
+                    {state.currTask >= 0 && state.currTask < config.taskNum
+                        && `${state.currTask + 1}/${config.taskNum}:点击 ${state.tasks[state.currTask]} 按钮`}
+                    {state.currTask >= config.taskNum && '已结束'}
+                </div>
+                <Divider />
+                <Row justify="center" style={{ textAlign: 'center' }} gutter={[10, 40]}>
+                    {buttons}
+                </Row>
+                <Drawer
+                    visible={showSettings}
+                    onClose={settingsClosed}
+                    width={720}
+                    title='设置'>
                     <Form layout='horizontal' {...formLayout}>
                         {/* <Form.Item label="绑定鼠标事件">
                             <Switch checked={useMouse} onChange={v=>setUseMouse(v)} />
@@ -243,21 +243,21 @@ const Gloves = () => {
                             <Row gutter={16}>
                                 <Col flex={1}>
                                     <Form.Item label="点击持续时间(ms)" layout='horizontal'>
-                                        <InputNumber min={0} max={10000} onChange={v=>setConfig({...config, duration: v})} value={config.duration} step={1000}/>
+                                        <InputNumber min={0} max={10000} onChange={v => setConfig({ ...config, duration: v })} value={config.duration} step={1000} />
                                     </Form.Item>
                                 </Col>
-                                
+
                                 <Col flex={1}>
                                     <Form.Item label="任务持续时间(ms)" layout='horizontal'>
-                                        <InputNumber min={0} max={100000} onChange={v=>setConfig({...config, t2: v})} value={config.t2} step={1000} />
+                                        <InputNumber min={0} max={100000} onChange={v => setConfig({ ...config, t2: v })} value={config.t2} step={1000} />
                                     </Form.Item>
                                 </Col>
                             </Row>
                         </Form.Item>
                     </Form>
                 </Drawer>
-        </Card>
-      </FullScreen>
+            </Card>
+        </FullScreen>
     );
 };
 

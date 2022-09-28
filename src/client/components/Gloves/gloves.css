@@ -3,20 +3,28 @@ span {
 }
 span.selected {
     border: 5px green solid;
-    background-color: lightblue;
+    border-radius: 10px;
+    background-color: #a9a9a9;
 }
 
 span.normal {
     border: none;
-    background-color: lightblue;
+    border-radius: 10px;
+    background-color: #a9a9a9;
 }
 
 span.clicked {
     border: 5px green solid;
-    background-color: yellow;
+    border-radius: 10px;
+    background-color: #9cdcfe;
 }
 .task {
     text-align: center;
     font-weight: bold;
     font-size: 30px;
+    color: #cccccc;
+}
+
+.ant-card {
+    background: black;
 }
