@@ -14,6 +14,7 @@ import Keyboard from './components/Keyboard/keyboard';
 import KeyboardPlot from './components/KeyboardPlot/keyboard';
 import Playground from './components/Playground/keyboard';
 import Ninekeys from './components/NineKeys/ninekeys';
+import NinekeysRC from './components/NineKeysRC/ninekeysRC';
 import MorseCode from './components/MorseCode/MorseCode';
 import PressureTest from './components/Pressure/PressureTest';
 import logo from './logo.png';
@@ -82,6 +83,9 @@ const Pagelayout = () => {
                     <Menu.Item key="/ninekeys" icon={<IconFont type="iconkeyboard" />}>
                         <Link to="/ninekeys">Ninekeys</Link>
                     </Menu.Item>
+                    <Menu.Item key="/ninekeysRC" icon={<IconFont type="iconkeyboard" />}>
+                        <Link to="/ninekeysRC">NinekeysRC</Link>
+                    </Menu.Item>
                 </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -100,6 +104,7 @@ const Pagelayout = () => {
                             <Route path="/chinese"><ChineseIME /></Route>
                             <Route path="/command"><Command /></Route>
                             <Route path="/ninekeys"><Ninekeys /></Route>
+                            <Route path="/ninekeysRC"><NinekeysRC /></Route>
                             <Route path="/">
                                 Socket 发送数据地址：
                                 {ip}

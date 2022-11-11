@@ -1,0 +1,25 @@
+span {
+    color: black;
+}
+span.selected {
+    border: 5px green solid;
+    border-radius: 10px;
+    background-color: #a9a9a9;
+}
+
+span.normal {
+    border: none;
+    border-radius: 10px;
+    background-color: #a9a9a9;
+}
+
+span.clicked {
+    border: 5px green solid;
+    border-radius: 10px;
+    background-color: #9cdcfe;
+}
+.task {
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
