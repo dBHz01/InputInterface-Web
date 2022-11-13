@@ -1,6 +1,7 @@
 span {
     color: black;
 }
+
 span.selected {
     border: 5px green solid;
     border-radius: 10px;
@@ -18,8 +19,111 @@ span.clicked {
     border-radius: 10px;
     background-color: #9cdcfe;
 }
+
 .task {
     text-align: center;
     font-weight: bold;
     font-size: 30px;
+}
+
+.circle-left {
+    width: 200px;
+    height: 400px;
+    border-radius: 0px 200px 200px 0px;
+    position: absolute;
+    right: 0;
+    transform-origin: 0 50%;
+    background-color: black;
+}
+
+.circle-right {
+    width: 200px;
+    height: 400px;
+    border-radius: 200px 0px 0px 200px;
+    position: absolute;
+    right: 0;
+    transform-origin: 100% 50%;
+    background-color: black;
+}
+
+.chosen-circle {
+    background-color: #92d050;
+}
+
+.unchosen-circle {
+    background-color: black;
+}
+
+#circle0 {
+    width: 400px;
+    height: 400px;
+    border-radius: 200px;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: 'ellipsis';
+    white-space: 'nowrap'
+}
+
+#circle2 {
+    transform: rotate(0deg);
+}
+
+#circle3 {
+    transform: rotate(45deg);
+}
+
+#circle4 {
+    transform: rotate(90deg);
+}
+
+#circle5 {
+    transform: rotate(135deg);
+}
+
+#circle6 {
+    transform: rotate(225deg);
+}
+
+#circle7 {
+    transform: rotate(270deg);
+}
+
+#circle8 {
+    transform: rotate(315deg);
+}
+
+#circle9 {
+    transform: rotate(0deg);
+}
+
+#left {
+    clip: rect(0px 200px 400px 0px);
+    position: absolute;
+    right: 0px;
+    width: 200px;
+    height: 400px;
+    overflow: hidden;
+}
+
+#right {
+    clip: rect(0px 200px 400px 0px);
+    position: absolute;
+    left: 0px;
+    width: 200px;
+    height: 400px;
+    overflow: hidden;
+}
+
+.cand-text {
+    margin: 5px;
+}
+
+.highlight-text {
+    background-color: yellow;
+    border: 2px;
+}
+
+.selected-area {
+    background-color: #d9d9d9;
 }
